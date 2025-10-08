@@ -30,7 +30,7 @@ jobs:
       # 4. PyInstallerでexe作成
       - name: Build EXE with PyInstaller
         run: |
-          pyinstaller --onefile tpc/equibase/03/equibase03_single.py
+          python -m pyinstaller --onefile tpc/equibase/03/equibase03_single.py
           # exeを分かりやすく名前変更
           Rename-Item -Path "dist/equibase03_single.exe" -NewName "equibase03_single_final.exe"
 
