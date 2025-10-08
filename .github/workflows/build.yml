@@ -32,11 +32,11 @@ jobs:
       # 4. PyInstallerでexe作成
       - name: Build EXE with PyInstaller
         run: |
-          pyinstaller --onefile main.py #■■■■■ファイルごとに書き換え■■■■■
+          pyinstaller --onefile tpc/equibase/03/equibase03_single.py #■■■■■ファイルごとに書き換え■■■■■
 
       # 5. ビルドしたexeをArtifactsとしてアップロード
       - name: Upload EXE artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tpc_exe #■■■■■ファイルごとに書き換え■■■■■
-          path: dist/main.exe #■■■■■ファイルごとに書き換え■■■■■
+          name: equibase03_exe #■■■■■ファイルごとに書き換え■■■■■
+          path: dist/equibase03_single.exe #■■■■■ファイルごとに書き換え■■■■■
