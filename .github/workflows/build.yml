@@ -30,6 +30,8 @@ jobs:
           pip install pyinstaller
           pip install selenium
           pip install chromedriver_binary
+          pip install bs4
+          pip install requests
           if exist requirements.txt pip install -r requirements.txt
 
       # 4. exeビルド（chromedriver_binary 対応）
@@ -42,17 +44,17 @@ jobs:
           for /f "delims=" %%i in ('python -c "import chromedriver_binary; print(chromedriver_binary.chromedriver_filename)"') do set CHROMEDRIVER_PATH=%%i
 
           REM exe ビルド
-          pyinstaller --onefile equibase\03\equibase03_single.py ^
+          pyinstaller --onefile racingaustralia\01\racingaustralia01.py ^
               --hidden-import=selenium ^
               --hidden-import=chromedriver_binary ^
               --add-data "%CHROMEDRIVER_PATH%;chromedriver_binary"
 
           REM exeの存在確認とリネーム
-          if exist dist\equibase03_single.exe rename dist\equibase03_single.exe equibase03_single_20251008.exe
+          if exist dist\racingaustralia01.exe rename dist\racingaustralia01.exe racingaustralia01_20251008.exe
 
       # 5. Artifactsアップロード
       - name: Upload EXE artifact
         uses: actions/upload-artifact@v4
         with:
-          name: equibase03_exe
-          path: dist\equibase03_single_20251008.exe
+          name: racingaustralia01_exe
+          path: dist\racingaustralia01_20251008.exe
