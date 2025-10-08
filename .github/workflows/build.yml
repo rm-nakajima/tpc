@@ -37,12 +37,15 @@ jobs:
         shell: cmd
         run: |
           cd %GITHUB_WORKSPACE%
-          
-          REM PyInstaller に hidden-import と chromedriver のバイナリを追加
+
+          REM chromedriver_binary の exe パスを取得
+          for /f "delims=" %%i in ('python -c "import chromedriver_binary; print(chromedriver_binary.chromedriver_filename)"') do set CHROMEDRIVER_PATH=%%i
+
+          REM exe ビルド
           pyinstaller --onefile equibase\03\equibase03_single.py ^
               --hidden-import=selenium ^
               --hidden-import=chromedriver_binary ^
-              --add-data "%LOCALAPPDATA%\Python\Python311\Lib\site-packages\chromedriver_binary\chromedriver.exe;chromedriver_binary"
+              --add-data "%CHROMEDRIVER_PATH%;chromedriver_binary"
 
           REM exeの存在確認とリネーム
           if exist dist\equibase03_single.exe rename dist\equibase03_single.exe equibase03_single_final.exe
@@ -52,4 +55,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: equibase03_exe
-          path: dist\equibase03_single_final.exe
+          path: dist\equibase03_single.exe
