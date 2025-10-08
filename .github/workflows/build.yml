@@ -29,18 +29,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyinstaller
           if exist requirements.txt pip install -r requirements.txt
+          REM selenium が requirements.txt に入っていない場合は明示的にインストール
+          pip install selenium
 
-      # 4. exeビルド（cmdシェル使用・相対パス修正）
+      # 4. exeビルド（cmdシェル使用・hidden-importでselenium対応）
       - name: Build EXE with PyInstaller
         shell: cmd
         run: |
-          REM リポジトリルートに移動
           cd %GITHUB_WORKSPACE%
-          
-          REM 相対パスでexeビルド
-          pyinstaller --onefile equibase\03\equibase03_single.py
-          
-          REM exeの存在確認とリネーム
+          pyinstaller --onefile equibase\03\equibase03_single.py --hidden-import=selenium
           if exist dist\equibase03_single.exe rename dist\equibase03_single.exe equibase03_single_final.exe
 
       # 5. Artifactsアップロード
