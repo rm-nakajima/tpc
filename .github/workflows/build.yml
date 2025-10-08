@@ -1,0 +1,42 @@
+name: Build EXE (Windows)
+
+# トリガー設定
+on:
+  push:
+    branches:
+      - main      # mainブランチにpushしたときに実行
+  workflow_dispatch: # 手動実行も可
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      # 1. リポジトリのコードを取得
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Pythonをセットアップ
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 3. 依存ライブラリのインストール
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+          if exist requirements.txt pip install -r requirements.txt
+
+      # 4. PyInstallerでexe作成
+      - name: Build EXE with PyInstaller
+        run: |
+          pyinstaller --onefile main.py #■■■■■ファイルごとに書き換え■■■■■
+
+      # 5. ビルドしたexeをArtifactsとしてアップロード
+      - name: Upload EXE artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tpc_exe #■■■■■ファイルごとに書き換え■■■■■
+          path: dist/main.exe #■■■■■ファイルごとに書き換え■■■■■
