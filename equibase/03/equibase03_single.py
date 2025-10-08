@@ -285,7 +285,7 @@ for s in range(len(targets)):
             else:
                 race_info_tbody.insert(0, '')
 
-            if race_info_tbody[1] == 'SCR':
+            if race_info_tbody[1].strip() == 'SCR':
                 race_info_tbody.insert(2, '')
 
             if race_info_head[0] == 'PP':
@@ -295,7 +295,7 @@ for s in range(len(targets)):
 
             ##年齢/性別
             try:
-                if race_info_tbody[1] == 'SCR':
+                if race_info_tbody[1].strip() == 'SCR':
                     h_age = race_info_tbody[3].split('/')[0]
                     h_sex = race_info_tbody[3].split('/')[1]
                 else:
