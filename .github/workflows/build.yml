@@ -1,15 +1,21 @@
-name: Build EXE (Windows)
+name: Build Windows EXE
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: windows-latest
-
+    
+    env:
+      # === 共通変数 ===
+      PYTHON_VERSION: "3.11"
+      SCRIPT_PATH: "racingaustralia\\01\\racingaustralia01.py"
+      SCRIPT_NAME: "racingaustralia01"
+      DIST_DIR: "dist"
+      
     steps:
       # 1. リポジトリ取得
       - name: Checkout repository
@@ -19,7 +25,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: ${{ env.PYTHON_VERSION }}
           architecture: 'x64'
 
       # 3. 依存ライブラリインストール
@@ -40,21 +46,24 @@ jobs:
         run: |
           cd %GITHUB_WORKSPACE%
 
+          REM 今日の日付を取得 (YYYYMMDD)
+          for /f %%a in ('powershell -Command "(Get-Date).ToString(\'yyyyMMdd\')"') do set TODAY=%%a
+          
           REM chromedriver_binary の exe パスを取得
           for /f "delims=" %%i in ('python -c "import chromedriver_binary; print(chromedriver_binary.chromedriver_filename)"') do set CHROMEDRIVER_PATH=%%i
 
           REM exe ビルド
-          pyinstaller --onefile racingaustralia\01\racingaustralia01.py ^
+          pyinstaller --onefile %SCRIPT_PATH% ^
               --hidden-import=selenium ^
               --hidden-import=chromedriver_binary ^
               --add-data "%CHROMEDRIVER_PATH%;chromedriver_binary"
 
           REM exeの存在確認とリネーム
-          if exist dist\racingaustralia01.exe rename dist\racingaustralia01.exe racingaustralia01_20251008.exe
+          if exist %DIST_DIR%\%SCRIPT_NAME%.exe rename %DIST_DIR%\%SCRIPT_NAME%.exe %SCRIPT_NAME%_%TODAY%.exe
 
-      # 5. Artifactsアップロード
+      # 5. ビルド成果物をアップロード
       - name: Upload EXE artifact
         uses: actions/upload-artifact@v4
         with:
-          name: racingaustralia01_exe
-          path: dist\racingaustralia01_20251008.exe
+          name: ${{ env.SCRIPT_NAME }}_exe
+          path: ${{ env.DIST_DIR }}\${{ env.SCRIPT_NAME }}_*.exe
