@@ -20,34 +20,26 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          architecture: 'x64'
 
-      # 3. 依存ライブラリのインストール
+      # 3. 依存ライブラリインストール（cmdシェル使用）
       - name: Install dependencies
+        shell: cmd
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pyinstaller
-          if (Test-Path "requirements.txt") { python -m pip install -r requirements.txt }
+          pip install pyinstaller
+          if exist requirements.txt pip install -r requirements.txt
 
-      # 4. exe作成
+      # 4. exeビルド（cmdシェル使用）
       - name: Build EXE with PyInstaller
+        shell: cmd
         run: |
-          # カレントディレクトリをリポジトリルートに設定
-          Set-Location $Env:GITHUB_WORKSPACE
-
-          # exeビルド
-          python -m pyinstaller --onefile tpc/equibase/03/equibase03_single.py
-
-          # distフォルダ内にexeが存在するか確認してからリネーム
-          $exePath = "dist/equibase03_single.exe"
-          if (Test-Path $exePath) {
-            Rename-Item -Path $exePath -NewName "equibase03_single_final.exe"
-          } else {
-            Write-Error "exeが作成されませんでした: $exePath"
-          }
+          pyinstaller --onefile tpc\equibase\03\equibase03_single.py
+          if exist dist\equibase03_single.exe rename dist\equibase03_single.exe equibase03_single_final.exe
 
       # 5. Artifactsアップロード
       - name: Upload EXE artifact
         uses: actions/upload-artifact@v4
         with:
           name: equibase03_exe
-          path: dist/equibase03_single_final.exe
+          path: dist\equibase03_single_final.exe
