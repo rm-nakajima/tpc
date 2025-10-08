@@ -48,7 +48,7 @@ jobs:
               --add-data "%CHROMEDRIVER_PATH%;chromedriver_binary"
 
           REM exeの存在確認とリネーム
-          if exist dist\equibase03_single.exe rename dist\equibase03_single.exe equibase03_single_final.exe
+          if exist dist\equibase03_single.exe rename dist\equibase03_single.exe equibase03_single_20251008.exe
 
       # 5. Artifactsアップロード
       - name: Upload EXE artifact
