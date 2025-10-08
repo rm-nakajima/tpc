@@ -55,4 +55,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: equibase03_exe
-          path: dist\equibase03_single.exe
+          path: dist\equibase03_single_20251008.exe
