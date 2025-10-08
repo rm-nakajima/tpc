@@ -30,16 +30,16 @@ jobs:
           pip install pyinstaller
           if exist requirements.txt pip install -r requirements.txt
 
-      # 4. exeビルド（cmdシェル使用）
+      # 4. exeビルド（cmdシェル使用・フルパス指定）
       - name: Build EXE with PyInstaller
         shell: cmd
         run: |
-          REM リポジトリルートに移動
+          REM カレントディレクトリをリポジトリルートに変更
           cd %GITHUB_WORKSPACE%
-          
-          REM exeビルド
-          pyinstaller --onefile tpc\equibase\03\equibase03_single.py
-          
+
+          REM フルパスでexeビルド
+          pyinstaller --onefile "%GITHUB_WORKSPACE%\tpc\equibase\03\equibase03_single.py"
+
           REM exeの存在確認とリネーム
           if exist dist\equibase03_single.exe rename dist\equibase03_single.exe equibase03_single_final.exe
 
