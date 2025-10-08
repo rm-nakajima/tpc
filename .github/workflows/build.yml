@@ -1,42 +1,42 @@
 name: Build EXE (Windows)
 
-# トリガー設定
 on:
   push:
     branches:
-      - main      # mainブランチにpushしたときに実行
-  workflow_dispatch: # 手動実行も可
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-      # 1. リポジトリのコードを取得
+      # 1. リポジトリを取得
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Pythonをセットアップ
+      # 2. Python セットアップ
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      # 3. 依存ライブラリのインストール
+      # 3. 依存ライブラリのインストール（PowerShell対応）
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pyinstaller
-          if exist requirements.txt pip install -r requirements.txt
+          if (Test-Path "requirements.txt") { pip install -r requirements.txt }
 
       # 4. PyInstallerでexe作成
       - name: Build EXE with PyInstaller
         run: |
-          pyinstaller --onefile tpc/equibase/03/equibase03_single.py #■■■■■ファイルごとに書き換え■■■■■
+          pyinstaller --onefile tpc/equibase/03/equibase03_single.py
+          # exeを分かりやすく名前変更
+          Rename-Item -Path "dist/equibase03_single.exe" -NewName "equibase03_single_final.exe"
 
-      # 5. ビルドしたexeをArtifactsとしてアップロード
+      # 5. exeをArtifactsとしてアップロード
       - name: Upload EXE artifact
         uses: actions/upload-artifact@v4
         with:
-          name: equibase03_exe #■■■■■ファイルごとに書き換え■■■■■
-          path: dist/equibase03_single.exe #■■■■■ファイルごとに書き換え■■■■■
+          name: equibase03_exe
+          path: dist/equibase03_single_final.exe
