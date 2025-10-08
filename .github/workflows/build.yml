@@ -34,7 +34,13 @@ jobs:
       - name: Build EXE with PyInstaller
         shell: cmd
         run: |
+          REM リポジトリルートに移動
+          cd %GITHUB_WORKSPACE%
+          
+          REM exeビルド
           pyinstaller --onefile tpc\equibase\03\equibase03_single.py
+          
+          REM exeの存在確認とリネーム
           if exist dist\equibase03_single.exe rename dist\equibase03_single.exe equibase03_single_final.exe
 
       # 5. Artifactsアップロード
